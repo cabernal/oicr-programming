@@ -29,7 +29,10 @@ class SpellCheck:
 
         #compile regex pattern
         valid_pattern_str = "[^a-zA-Z]*([A-zA-Z]+)[^a-zA-Z]*$"
-        self.valid_pattern = re.compile(valid_pattern_str) 
+        self.valid_pattern = re.compile(valid_pattern_str)
+
+    def set_input_file(self, input_file):
+        self.input_file = input_file
 
     def get_misspelling(self, token):
         """
@@ -73,9 +76,6 @@ class SpellCheck:
 
 
 def usage():
-    """
-    Usage message to be used in case of no input files present
-    """
     print "usage: python spellcheck.py input_file dictionary_file"
 
 def print_list(l):
