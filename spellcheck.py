@@ -1,12 +1,5 @@
+#!/usr/bin/python
 import sys, re
-
-"""
-Notes
-    * Can ignore case
-    * Should we convert to small case as we load in files?
-    * Convert to lower case on find calls
-    * Frequency of misspelling should be less than number of words
-"""
 
 class Dictionary:
     def __init__(self, dict_file):
@@ -16,14 +9,15 @@ class Dictionary:
             for line in f:
                 #convert word to lower case before appending to list
                 #TODO: Remove trailing/leading non-alphabetic chars
-                self.dict_list.append(line.lower().rstrip('\n'))
+                self.dict_list.append(line.lower().rstrip())
 
     def contains(self, word):
         #TODO: Check empty/null args, try binary search
-        input_word = word.lower()
-        for dict_word in self.dict_list:
-            if input_word in self.dict_list:
-                return True
+        if word:
+            input_word = word.lower()
+            for dict_word in self.dict_list:
+                if input_word in self.dict_list:
+                    return True
         return False
 
 
@@ -37,42 +31,52 @@ class SpellCheck:
         valid_pattern_str = "[^a-zA-Z]*([A-zA-Z]+)[^a-zA-Z]*$"
         self.valid_pattern = re.compile(valid_pattern_str) 
 
-    def is_misspelled(self, token):
+    def get_misspelling(self, token):
+        """
+        If there is a spelling error in the token, return the matched error 
+        otherwise return None
+        """
         token_match = self.valid_pattern.match(token)
         if token_match:
             word_match = token_match.group(1)
-            return not self.dictionary.contains(word_match)
-        return False
+            if not self.dictionary.contains(word_match):
+                return word_match
+        return None
 
-    def get_errors2(self):
+    def get_errors_hof(self):
+        """
+        Return a list containing all spelling errors, using higher order functions.
+        """
         misspellings = []
         with open(self.input_file) as f:
+            #loop through file, in case there is more than one line
             for line in f:
-                print line.split
-                cur_errors = filter(self.is_misspelled, line.split())
+                cur_errors = map(self.get_misspelling, line.split())
+                cur_errors = filter((lambda x: x), cur_errors)
                 misspellings.extend(cur_errors)
         return misspellings
         
         
 
     def get_errors(self):
+        """
+        Return a list containing all spelling errors.
+        """
         misspellings = []
         with open(self.input_file) as f:
-            #TODO: Could replace with readLine()
-            #      Could try a map
+            #loop through file, in case there is more than one line
             for line in f:
                 for token in line.split():
-                    #match token
-                    token_match = self.valid_pattern.match(token)
-                    if token_match:
-                        word_match = token_match.group(1)
-                        if not self.dictionary.contains(word_match):
-                            misspellings.append(word_match)
+                    spelling_error = self.get_misspelling(token)
+                    if spelling_error: misspellings.append(spelling_error)
         return misspellings
 
 
 def usage():
-   print "usage: python spellcheck.py input_file dictionary_file"
+    """
+    Usage message to be used in case of no input files present
+    """
+    print "usage: python spellcheck.py input_file dictionary_file"
 
 def print_list(l):
     for i in l:
@@ -84,8 +88,9 @@ def main(argv):
         usage()
         sys.exit()
 
+    #create SpellCheck object with given input and dictionary files and print any errors
     sp = SpellCheck(argv[0], argv[1])
-    print_list(sp.get_errors2())
+    print_list(sp.get_errors())
 
 if __name__ == "__main__":
     main(sys.argv[1:])
