@@ -1,8 +1,19 @@
 #!/usr/bin/python
 from spellcheck import Dictionary, SpellCheck
+#location of dictionary test files
+dict_file = "test_files/dict_file"
+empty_dict_file = "test_files/dict_file_empty"
+
+#location of input test files
+input_file = "test_files/in_file"
+bad_punc_input = "test_files/in_file_bad_punctuation"
+correct_input = "test_files/in_file_correct"
+whitespaces_input = "test_files/in_file_long_whitespaces"
+empty_input = "test_files/in_file_empty"
+small_input = "test_files/in_file_small"
 
 def test_dictionary():
-    dictionary = Dictionary("dict_file")
+    dictionary = Dictionary(dict_file)
     assert(dictionary.contains("this"))
     assert(dictionary.contains("test"))
     assert(dictionary.contains("document"))
@@ -21,10 +32,8 @@ def test_dictionary():
 
 def test_spellcheck():
     test_errors = ["documnt", "words", "difficlt"]
-    in_files = ["in_file",
-                "in_file_long_whitespaces",
-                "in_file_bad_punctuation"]
-    sp = SpellCheck("", "dict_file")
+    in_files = [input_file, whitespaces_input, bad_punc_input]
+    sp = SpellCheck("", dict_file)
     for f in in_files:
         sp.set_input_file(f)
 
@@ -52,16 +61,18 @@ def test_spellcheck():
         assert(sp.get_errors() == test_errors)
 
 def test_correct_files():
-    sp = SpellCheck("in_file_correct", "dict_file")
+    sp = SpellCheck(correct_input, dict_file)
     assert(not sp.get_errors())
 
 def test_empty_files():
-    sp = SpellCheck("in_file_empty", "dict_file")
+    sp = SpellCheck(empty_input, dict_file)
+    assert(not sp.get_errors())
+
+    sp = SpellCheck(empty_input, empty_dict_file)
     assert(not sp.get_errors())
 
     test_errors = [ "This", "is", "a", "test", "document"]
-
-    sp = SpellCheck("in_file_small", "dict_file_empty")
+    sp = SpellCheck(small_input, empty_dict_file)
     assert(sp.get_errors() == test_errors)
     return
 
