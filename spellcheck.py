@@ -8,12 +8,14 @@ class Dictionary:
         with open(dict_file) as f:
             for line in f:
                 #convert word to lower case before appending to list
-                #TODO: Remove trailing/leading non-alphabetic chars
                 self.dict_list.append(line.lower().rstrip())
 
     def contains(self, word):
-        #TODO: Check empty/null args, try binary search
+        """
+        Return True if word is in the dictionary, false otherwise
+        """
         if word:
+            #ignore letter case
             input_word = word.lower()
             for dict_word in self.dict_list:
                 if input_word in self.dict_list:
@@ -27,7 +29,7 @@ class SpellCheck:
         self.input_file = input_file
         self.dictionary = Dictionary(dict_file)
 
-        #compile regex pattern
+        #compile regex pattern, group 1 contains word to match
         valid_pattern_str = "[^a-zA-Z]*([A-zA-Z]+)[^a-zA-Z]*$"
         self.valid_pattern = re.compile(valid_pattern_str)
 
@@ -48,12 +50,13 @@ class SpellCheck:
 
     def get_errors(self):
         """
-        Return a list containing all spelling errors.
+        Return a list containing all spelling errors of input file wrt dictionary.
         """
         misspellings = []
         with open(self.input_file) as f:
             #loop through file, in case there is more than one line
             for line in f:
+                #split on whitespaces and append spelling errors to result
                 for token in line.split():
                     spelling_error = self.get_misspelling(token)
                     if spelling_error: misspellings.append(spelling_error)
