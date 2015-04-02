@@ -46,21 +46,6 @@ class SpellCheck:
                 return word_match
         return None
 
-    def get_errors_hof(self):
-        """
-        Return a list containing all spelling errors, using higher order functions.
-        """
-        misspellings = []
-        with open(self.input_file) as f:
-            #loop through file, in case there is more than one line
-            for line in f:
-                cur_errors = map(self.get_misspelling, line.split())
-                cur_errors = filter((lambda x: x), cur_errors)
-                misspellings.extend(cur_errors)
-        return misspellings
-        
-        
-
     def get_errors(self):
         """
         Return a list containing all spelling errors.
