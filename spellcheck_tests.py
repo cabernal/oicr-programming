@@ -78,12 +78,12 @@ def test_empty_files():
 
 
 def main():
-    print "Running tests..."
+    print("Running tests...")
     test_dictionary()
     test_spellcheck()
     test_correct_files()
     test_empty_files()
-    print "All tests passed!"
+    print("All tests passed!")
 
 
 if __name__ == "__main__":

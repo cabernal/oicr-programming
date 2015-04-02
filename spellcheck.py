@@ -64,11 +64,11 @@ class SpellCheck:
 
 
 def usage():
-    print "usage: python spellcheck.py input_file dictionary_file"
+    print("usage: python spellcheck.py input_file dictionary_file")
 
 def print_list(l):
     for i in l:
-        print i
+        print(i)
 
 def main(argv):
     #make sure we have input and dictionary files
