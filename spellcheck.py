@@ -30,7 +30,7 @@ class SpellCheck:
         self.dictionary = Dictionary(dict_file)
 
         #compile regex pattern, group 1 contains word to match
-        valid_pattern_str = "[^a-zA-Z]*([A-zA-Z]+)[^a-zA-Z]*$"
+        valid_pattern_str = "[^a-zA-Z]*([a-zA-Z]+)[^a-zA-Z]*$"
         self.valid_pattern = re.compile(valid_pattern_str)
 
     def set_input_file(self, input_file):
