@@ -1,0 +1,25 @@
+Synopsis: 
+    * Spellcheck is a command line tool that outputs any spelling mistakes in a document, with respect to a specified dictionary.
+
+Dependencies:
+    * python 2.x and 3.x to run the tool (spellcheck.py)
+    * python 2.x to run the tests (spelllcheck_tests.py)
+
+Usage: 
+    * python spellcheck.py <input_file> <dictionary_file>
+    * <input_file>: file to be checked, contains words composed of printable ASCII text, delimited by whitespace.
+    * <dictionary_file>: dictionary file, contains words composed of printable ASCII text, containing exactly one word per line.
+
+Running Tests:
+    * Untar test files -  tar xvf oicr-camilo.tar
+    * Run tests - cd oicr-programming-exercise/ && python2.<x> spellcheck_tests.py
+
+Files Included:
+    * oicr-camilo.tar:
+        - spellcheck.py: spelling checker tool
+        - spellcheck_tests.py: spelling checker tests
+        - test_files/*: test data files
+        - README
+    * spellcheck.py: spelling checker tool
+    * README
+
