@@ -3,12 +3,16 @@ import sys, re
 
 class Dictionary:
     def __init__(self, dict_file):
-        self.dict_list = []
+        # * use set for fast membership test
+        # * set is similar to hash table, it holds a single key instead of a key/value pair
+        # * lookup time of set is also O(1)
+        self.dict_set= set()
         #load dictonary file into memory
         with open(dict_file) as f:
             for line in f:
-                #convert word to lower case before appending to list
-                self.dict_list.append(line.lower().rstrip())
+                #convert word to lower case and remove trailing new-line characters
+                dict_word = line.lower().rstrip()
+                self.dict_set.add(dict_word);
 
     def contains(self, word):
         """
@@ -16,12 +20,8 @@ class Dictionary:
         """
         if word:
             #ignore letter case
-            input_word = word.lower()
-            for dict_word in self.dict_list:
-                if input_word in self.dict_list:
-                    return True
+            return word.lower() in self.dict_set
         return False
-
 
 class SpellCheck:
 
@@ -30,7 +30,8 @@ class SpellCheck:
         self.dictionary = Dictionary(dict_file)
 
         #compile regex pattern, group 1 contains word to match
-        valid_pattern_str = "[^a-zA-Z]*([a-zA-Z]+)[^a-zA-Z]*$"
+        #old regex "[^a-zA-Z]*([a-zA-Z]+)[^a-zA-Z]*$" did not take apostrophes into account
+        valid_pattern_str = "[^a-zA-Z]*([a-zA-Z]+(\'[a-zA-Z])?)[^a-zA-Z]*$"
         self.valid_pattern = re.compile(valid_pattern_str)
 
     def set_input_file(self, input_file):
@@ -56,19 +57,14 @@ class SpellCheck:
         with open(self.input_file) as f:
             #loop through file, in case there is more than one line
             for line in f:
-                #split on whitespaces and append spelling errors to result
+                #split on whitespaces and print any words not found in dictionary
                 for token in line.split():
                     spelling_error = self.get_misspelling(token)
-                    if spelling_error: misspellings.append(spelling_error)
-        return misspellings
+                    if spelling_error: print(spelling_error)
 
 
 def usage():
     print("usage: python spellcheck.py input_file dictionary_file")
-
-def print_list(l):
-    for i in l:
-        print(i)
 
 def main(argv):
     #make sure we have input and dictionary files
@@ -78,7 +74,7 @@ def main(argv):
 
     #create SpellCheck object with given input and dictionary files and print any errors
     sp = SpellCheck(argv[0], argv[1])
-    print_list(sp.get_errors())
+    sp.get_errors()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
