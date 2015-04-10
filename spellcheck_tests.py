@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from spellcheck import Dictionary, SpellCheck
+import sys
 #location of dictionary test files
 dict_file = "test_files/dict_file"
 empty_dict_file = "test_files/dict_file_empty"
@@ -11,6 +12,19 @@ correct_input = "test_files/in_file_correct"
 whitespaces_input = "test_files/in_file_long_whitespaces"
 empty_input = "test_files/in_file_empty"
 small_input = "test_files/in_file_small"
+
+
+#redirecting output stream to string list: http://stackoverflow.com/questions/21341096/redirect-print-to-string-list
+class ListStream:
+    def __init__(self):
+        self.data = []
+    def write(self, s):
+        self.data.append(s)
+    def flush(self):
+        self.data = []
+    def get_data(self):
+        return filter(lambda test_stream: test_stream != '\n', self.data)
+test_stream = ListStream()
 
 def test_dictionary():
     dictionary = Dictionary(dict_file)
@@ -58,31 +72,40 @@ def test_spellcheck():
         assert(not sp.get_misspelling("2+2=?"))
 
         #test SpellCheck#get_errors:
-        assert(sp.get_errors() == test_errors)
+        sp.get_errors()
+        assert(test_stream.get_data() == test_errors)
+        test_stream.flush()
 
 def test_correct_files():
     sp = SpellCheck(correct_input, dict_file)
-    assert(not sp.get_errors())
+    sp.get_errors()
+    assert(not test_stream.get_data())
+    test_stream.flush()
 
 def test_empty_files():
     sp = SpellCheck(empty_input, dict_file)
-    assert(not sp.get_errors())
+    sp.get_errors()
+    assert(not test_stream.get_data())
 
     sp = SpellCheck(empty_input, empty_dict_file)
-    assert(not sp.get_errors())
+    sp.get_errors()
+    assert(not test_stream.get_data())
 
     test_errors = [ "This", "is", "a", "test", "document"]
     sp = SpellCheck(small_input, empty_dict_file)
-    assert(sp.get_errors() == test_errors)
+    sp.get_errors()
+    assert(test_stream.get_data() == test_errors)
     return
 
 
 def main():
     print("Running tests...")
+    sys.stdout = test_stream
     test_dictionary()
     test_spellcheck()
     test_correct_files()
     test_empty_files()
+    sys.stdout = sys.__stdout__
     print("All tests passed!")
 
 
